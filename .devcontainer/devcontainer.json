@@ -5,7 +5,10 @@
         "ghcr.io/devcontainers/features/node:1": {
             "version": "18"
         },
-        "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+        "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+        "ghcr.io/devcontainers/features/github-cli:1": {},
+        "ghcr.io/devcontainers/features/git:1": {},
+        "ghcr.io/devcontainers/features/common-utils:2": {}
     },
     "customizations": {
         "vscode": {
@@ -14,18 +17,28 @@
                 "ms-python.vscode-pylance",
                 "dbaeumer.vscode-eslint",
                 "esbenp.prettier-vscode",
-                "ms-azuretools.vscode-docker"
-            ]
+                "ms-azuretools.vscode-docker",
+                "ms-vscode-remote.remote-containers",
+                "ms-vscode-remote.remote-ssh",
+                "ms-vscode.remote-explorer"
+            ],
+            "settings": {
+                "python.defaultInterpreterPath": "/usr/local/bin/python",
+                "python.linting.enabled": true,
+                "python.linting.pylintEnabled": true,
+                "python.formatting.provider": "black",
+                "editor.formatOnSave": true,
+                "editor.codeActionsOnSave": {
+                    "source.organizeImports": true
+                }
+            }
         }
     },
     "forwardPorts": [3000, 5000, 5001],
-    "postCreateCommand": "pip install -r backend/requirements.txt && pip install -r middleware/requirements.txt && cd frontend && npm install",
+    "postCreateCommand": "pip install -r backend/requirements.txt && pip install -r middleware/requirements.txt && cd frontend && npm install && cd .. && pip install black pylint",
     "remoteUser": "vscode",
     "overrideCommand": true,
     "updateRemoteUserUID": true,
-    "mounts": [
-        "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached"
-    ],
-    "workspaceFolder": "/workspace",
+    "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
     "runArgs": ["--init"]
 } 
