@@ -1,7 +1,6 @@
 {
     "name": "Machine Vision System",
     "image": "mcr.microsoft.com/devcontainers/python:3.10",
-    "dockerComposeFile": null,
     "features": {
         "ghcr.io/devcontainers/features/node:1": {
             "version": "18"
@@ -28,6 +27,5 @@
         "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached"
     ],
     "workspaceFolder": "/workspace",
-    "runArgs": ["--init"],
-    "service": null
+    "runArgs": ["--init"]
 } 
