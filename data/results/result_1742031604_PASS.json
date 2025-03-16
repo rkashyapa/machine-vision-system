@@ -1,0 +1,19 @@
+{
+  "image_path": "/app/data/images/sample3.jpg",
+  "timestamp": 1742031604.7759373,
+  "filename": "sample3.jpg",
+  "results": [
+    {
+      "label": "object",
+      "confidence": 0.95,
+      "bbox": [
+        100,
+        100,
+        200,
+        200
+      ]
+    }
+  ],
+  "processing_timestamp": 1742031604.7760172,
+  "decision": "PASS"
+}

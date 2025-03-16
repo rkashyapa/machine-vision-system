@@ -1,0 +1,10 @@
+flask
+flask-cors
+werkzeug
+gunicorn
+requests
+python-dotenv
+flask-socketio
+gevent
+Pillow
+piexif

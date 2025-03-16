@@ -1,0 +1,47 @@
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: ../docker/Dockerfile.frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - middleware
+    networks:
+      - vision-network
+
+  middleware:
+    build:
+      context: ./middleware
+      dockerfile: ../docker/Dockerfile.middleware
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./middleware:/app
+      - ./data:/app/data
+    environment:
+      - PYTHONPATH=/app
+    depends_on:
+      - backend
+    networks:
+      - vision-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: ../docker/Dockerfile.backend
+    ports:
+      - "5001:5001"
+    volumes:
+      - ./backend:/app
+      - ./database:/app/database
+      - ./data:/app/data
+    networks:
+      - vision-network
+
+networks:
+  vision-network:
+    driver: bridge
