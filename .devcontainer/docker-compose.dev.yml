@@ -3,8 +3,8 @@ version: '3.8'
 services:
   dev:
     build: 
-      context: ..
-      dockerfile: .devcontainer/Dockerfile.dev
+      context: .
+      dockerfile: Dockerfile.dev
     volumes:
       - ..:/workspace:cached
       - ~/.ssh:/home/vscode/.ssh:ro

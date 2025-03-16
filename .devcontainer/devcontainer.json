@@ -1,11 +1,9 @@
 {
     "name": "Machine Vision System Development",
-    "dockerComposeFile": [
-        "../docker-compose.yml",
-        "docker-compose.dev.yml"
-    ],
-    "service": "dev",
-    "workspaceFolder": "/workspace",
+    "build": {
+        "dockerfile": "Dockerfile.dev",
+        "context": "."
+    },
     "customizations": {
         "vscode": {
             "extensions": [
