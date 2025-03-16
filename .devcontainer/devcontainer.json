@@ -1,0 +1,48 @@
+{
+    "name": "Machine Vision System Development",
+    "dockerComposeFile": [
+        "../docker-compose.yml",
+        "docker-compose.dev.yml"
+    ],
+    "service": "dev",
+    "workspaceFolder": "/workspace",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-python.python",
+                "ms-python.vscode-pylance",
+                "dbaeumer.vscode-eslint",
+                "esbenp.prettier-vscode",
+                "ms-azuretools.vscode-docker",
+                "github.copilot",
+                "github.copilot-chat",
+                "eamodio.gitlens",
+                "ms-python.black-formatter",
+                "ms-vscode.vscode-typescript-next",
+                "dsznajder.es7-react-js-snippets"
+            ],
+            "settings": {
+                "python.defaultInterpreterPath": "/usr/local/bin/python",
+                "python.linting.enabled": true,
+                "python.linting.pylintEnabled": true,
+                "python.formatting.provider": "black",
+                "editor.formatOnSave": true,
+                "editor.codeActionsOnSave": {
+                    "source.fixAll.eslint": true
+                }
+            }
+        }
+    },
+    "features": {
+        "ghcr.io/devcontainers/features/python:1": {
+            "version": "3.10"
+        },
+        "ghcr.io/devcontainers/features/node:1": {
+            "version": "18"
+        },
+        "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+    },
+    "forwardPorts": [3000, 5000, 5001],
+    "postCreateCommand": "pip install -r backend/requirements.txt && pip install -r middleware/requirements.txt && cd frontend && npm install",
+    "remoteUser": "vscode"
+} 

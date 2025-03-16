@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  dev:
+    build: 
+      context: ..
+      dockerfile: .devcontainer/Dockerfile.dev
+    volumes:
+      - ..:/workspace:cached
+      - ~/.ssh:/home/vscode/.ssh:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - node_modules:/workspace/frontend/node_modules
+      - backend_venv:/workspace/backend/.venv
+      - middleware_venv:/workspace/middleware/.venv
+    command: sleep infinity
+    environment:
+      - PYTHONPATH=/workspace
+      - NODE_ENV=development
+    network_mode: service:middleware
+
+volumes:
+  node_modules:
+  backend_venv:
+  middleware_venv: 
