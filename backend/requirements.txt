@@ -1,8 +1,7 @@
 numpy
 opencv-python
 pillow
-torch
-torchvision
 piexif
 flask
 flask-cors
+onnxruntime

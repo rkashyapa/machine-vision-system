@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
-import Head from 'next/head';
 import axios from 'axios';
-import { io } from 'socket.io-client';
+import Head from 'next/head';
+import { useEffect, useRef, useState } from 'react';
 import ReactSlider from 'react-slider';
+import { io } from 'socket.io-client';
 import styles from '../styles/Home.module.css';
 
 // API base URL
@@ -35,43 +35,43 @@ export default function Home() {
   const [captureResult, setCaptureResult] = useState<CaptureResult | null>(null);
   const [confidenceThreshold, setConfidenceThreshold] = useState(0.5);
   const [isSavingThreshold, setIsSavingThreshold] = useState(false);
-  
+
   // Refs
   const socketRef = useRef<any>(null);
   const logsContainerRef = useRef<HTMLDivElement>(null);
-  
+
   // Connect to WebSocket and set up event listeners
   useEffect(() => {
     // Initialize socket connection
     socketRef.current = io(SOCKET_URL);
-    
+
     // Connection status
     socketRef.current.on('connect', () => {
       setIsConnected(true);
       console.log('Connected to WebSocket');
     });
-    
+
     socketRef.current.on('disconnect', () => {
       setIsConnected(false);
       console.log('Disconnected from WebSocket');
     });
-    
+
     // Log messages
     socketRef.current.on('log_message', (logMessage: LogMessage) => {
       setLogs((prevLogs) => [...prevLogs, logMessage]);
     });
-    
+
     // Log history on initial connection
     socketRef.current.on('log_history', (data: { logs: LogMessage[] }) => {
       setLogs(data.logs);
     });
-    
+
     // Capture results
     socketRef.current.on('capture_result', (result: CaptureResult) => {
       setCaptureResult(result);
       setIsCapturing(false);
     });
-    
+
     // Cleanup on unmount
     return () => {
       if (socketRef.current) {
@@ -79,7 +79,7 @@ export default function Home() {
       }
     };
   }, []);
-  
+
   // Load settings on mount
   useEffect(() => {
     const loadSettings = async () => {
@@ -92,21 +92,21 @@ export default function Home() {
         console.error('Error loading settings:', error);
       }
     };
-    
+
     loadSettings();
   }, []);
-  
+
   // Scroll logs to bottom when new logs arrive
   useEffect(() => {
     if (logsContainerRef.current) {
       logsContainerRef.current.scrollTop = logsContainerRef.current.scrollHeight;
     }
   }, [logs]);
-  
+
   // Handle capture button click
   const handleCapture = async () => {
     setIsCapturing(true);
-    
+
     try {
       const response = await axios.post(`${API_BASE_URL}/api/capture`);
       if (!response.data.success) {
@@ -117,21 +117,21 @@ export default function Home() {
       setIsCapturing(false);
     }
   };
-  
+
   // Handle confidence threshold change
   const handleThresholdChange = (value: number) => {
     setConfidenceThreshold(value);
   };
-  
+
   // Save threshold to server
   const saveThreshold = async () => {
     setIsSavingThreshold(true);
-    
+
     try {
       const response = await axios.post(`${API_BASE_URL}/api/settings`, {
         confidence_threshold: confidenceThreshold
       });
-      
+
       if (!response.data.success) {
         console.error('Error saving threshold:', response.data.error);
       }
@@ -141,11 +141,11 @@ export default function Home() {
       setIsSavingThreshold(false);
     }
   };
-  
+
   // Render log entry with appropriate style based on level
   const renderLogEntry = (log: LogMessage, index: number) => {
     let levelClass;
-    
+
     switch (log.level.toUpperCase()) {
       case 'INFO':
         levelClass = styles.logInfo;
@@ -162,7 +162,7 @@ export default function Home() {
       default:
         levelClass = '';
     }
-    
+
     return (
       <div key={index} className={styles.logEntry}>
         <span className={styles.logTimestamp}>{log.timestamp}</span>
@@ -170,7 +170,7 @@ export default function Home() {
       </div>
     );
   };
-  
+
   return (
     <div className={styles.container}>
       <Head>
@@ -181,34 +181,34 @@ export default function Home() {
 
       <main className={styles.main}>
         <h1 className={styles.title}>Machine Vision System</h1>
-        
+
         {/* Control Panel */}
         <div className={styles.controlPanel}>
           <div className={styles.controlRow}>
-            <button 
+            <button
               className={styles.triggerButton}
               onClick={handleCapture}
               disabled={isCapturing || !isConnected}
             >
               {isCapturing ? 'Capturing...' : 'Trigger Capture'}
             </button>
-            
+
             <div>
-              Connection Status: {isConnected ? 
-                <span style={{ color: 'green' }}>Connected</span> : 
+              Connection Status: {isConnected ?
+                <span style={{ color: 'green' }}>Connected</span> :
                 <span style={{ color: 'red' }}>Disconnected</span>
               }
             </div>
           </div>
-          
+
           {/* Settings Panel */}
           <div className={styles.settingsPanel}>
             <div className={styles.sliderContainer}>
               <label className={styles.sliderLabel}>
-                Confidence Threshold 
+                Confidence Threshold
                 <span className={styles.sliderValue}>{confidenceThreshold.toFixed(2)}</span>
               </label>
-              
+
               <ReactSlider
                 className="horizontal-slider"
                 thumbClassName="slider-thumb"
@@ -221,7 +221,7 @@ export default function Home() {
                 onAfterChange={saveThreshold}
                 renderThumb={(props, state) => <div {...props}>{state.valueNow.toFixed(2)}</div>}
               />
-              
+
               <style jsx>{`
                 .horizontal-slider {
                   width: 100%;
@@ -253,7 +253,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-        
+
         {/* Images Container */}
         <div className={styles.imagesContainer}>
           {/* Original Image */}
@@ -261,32 +261,32 @@ export default function Home() {
             <h2 className={styles.imageTitle}>Original Image</h2>
             <div className={styles.imageWrapper}>
               {captureResult && captureResult.original_image ? (
-                <img 
-                  src={`${API_BASE_URL}/api/images/original/${captureResult.original_image}`} 
-                  alt="Original" 
-                  className={styles.image} 
+                <img
+                  src={`${API_BASE_URL}/api/images/original/${captureResult.original_image}`}
+                  alt="Original"
+                  className={styles.image}
                 />
               ) : (
                 <div className={styles.noImage}>No image captured</div>
               )}
             </div>
           </div>
-          
+
           {/* Processed Image */}
           <div className={styles.imagePanel}>
             <h2 className={styles.imageTitle}>Processed Image</h2>
             <div className={styles.imageWrapper}>
               {captureResult && captureResult.processed_image ? (
-                <img 
-                  src={`${API_BASE_URL}${captureResult.processed_image_url}`} 
-                  alt="Processed" 
-                  className={styles.image} 
+                <img
+                  src={`${API_BASE_URL}${captureResult.processed_image_url}`}
+                  alt="Processed"
+                  className={styles.image}
                 />
               ) : (
                 <div className={styles.noImage}>No processed image</div>
               )}
             </div>
-            
+
             {captureResult && (
               <div className={styles.metadata}>
                 <div className={styles.metadataItem}>
@@ -304,7 +304,7 @@ export default function Home() {
             )}
           </div>
         </div>
-        
+
         {/* Log Panel */}
         <div className={styles.logPanel}>
           <h2 className={styles.logTitle}>Activity Log</h2>

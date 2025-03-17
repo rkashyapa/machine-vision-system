@@ -37,11 +37,25 @@
             }
         }
     },
-    "forwardPorts": [3000, 5000, 5001],
+    "forwardPorts": [
+        3000,
+        5000,
+        5001
+    ],
     "postCreateCommand": "pip install -r backend/requirements.txt && pip install -r middleware/requirements.txt && cd frontend && npm install && cd .. && pip install black pylint",
     "remoteUser": "vscode",
     "overrideCommand": true,
     "updateRemoteUserUID": true,
     "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
-    "runArgs": ["--init"]
+    "runArgs": [
+        "--init",
+        "--cpus=4",
+        "--memory=8g",
+        "--memory-swap=16g"
+    ],
+    "hostRequirements": {
+        "cpus": 4,
+        "memory": "8gb",
+        "storage": "32gb"
+    }
 }

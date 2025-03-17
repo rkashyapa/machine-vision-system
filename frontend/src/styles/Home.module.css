@@ -210,9 +210,9 @@
   .imagesContainer {
     flex-direction: column;
   }
-  
+
   .imagePanel {
     width: 100%;
     margin-bottom: 1rem;
   }
-} 
+}
