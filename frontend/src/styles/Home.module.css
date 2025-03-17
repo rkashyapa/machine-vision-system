@@ -153,14 +153,47 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
+.logHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
 .logTitle {
   font-size: 1.2rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0;
   font-weight: bold;
 }
 
+.logActions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.iconButton {
+  background-color: transparent;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 0.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.iconButton:hover {
+  background-color: #e0e0e0;
+}
+
+.iconButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .logsContainer {
-  height: 200px;
+  height: 300px;
   overflow-y: auto;
   background-color: #2d3436;
   color: #dfe6e9;
