@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from 'react';
 import ReactSlider from 'react-slider';
 import { io } from 'socket.io-client';
 import styles from '../styles/Home.module.css';
-import { FaTrash, FaCopy } from 'react-icons/fa';
 
 // API base URL
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
@@ -110,10 +109,14 @@ export default function Home() {
 
     try {
       const response = await axios.post(`${API_BASE_URL}/api/capture`);
+      console.log('Capture response:', response.data);
+      
       if (response.data.success) {
         // Update the captureResult state with the response
         setCaptureResult(response.data);
+        setIsCapturing(false);
       } else {
+        console.error('Capture failed:', response.data.error);
         setIsCapturing(false);
       }
     } catch (error) {
@@ -146,46 +149,9 @@ export default function Home() {
     }
   };
 
-  // Clear all logs
-  const clearLogs = () => {
-    setLogs([]);
-  };
-
-  // Copy logs to clipboard
-  const copyLogs = () => {
-    const logText = logs.map(log => `${log.timestamp} [${log.level}] ${log.message}`).join('\n');
-    navigator.clipboard.writeText(logText)
-      .then(() => {
-        console.log('Logs copied to clipboard');
-      })
-      .catch(err => {
-        console.error('Failed to copy logs: ', err);
-      });
-  };
-
   // Render log entry with appropriate style based on level
   const renderLogEntry = (log: LogMessage, index: number) => {
     let levelClass;
-    let moduleType = 'unknown';
-
-    // Determine module type based on message content
-    if (log.message.startsWith('Middleware:')) {
-      moduleType = 'middleware';
-    } else if (log.message.includes('Backend:') || log.message.includes('backend')) {
-      moduleType = 'backend';
-    } else if (log.message.includes('Frontend:') || log.message.includes('frontend')) {
-      moduleType = 'frontend';
-    } else if (log.message.includes('Camera:') || log.message.includes('camera') || log.message.includes('frame')) {
-      moduleType = 'camera';
-    } else if (log.message.includes('Processing:') || log.message.includes('processing') || log.message.includes('processed')) {
-      moduleType = 'processing';
-    } else if (log.message.includes('inference') || log.message.includes('Inference')) {
-      moduleType = 'inference';
-    } else if (log.message.includes('WebSocket') || log.message.includes('Socket')) {
-      moduleType = 'socket';
-    } else if (log.message.includes('Flask')) {
-      moduleType = 'server';
-    }
 
     switch (log.level.toUpperCase()) {
       case 'INFO':
@@ -200,20 +166,15 @@ export default function Home() {
       case 'ERROR':
         levelClass = styles.logError;
         break;
-      case 'DEBUG':
-        levelClass = styles.logDebug;
-        break;
       default:
         levelClass = '';
     }
 
     return (
-      <tr key={index} className={styles.logEntry}>
-        <td className={styles.logTimestamp}>{log.timestamp}</td>
-        <td className={`${styles.logLevel} ${levelClass}`}>{log.level}</td>
-        <td className={styles.logModule}>{moduleType}</td>
-        <td className={styles.logMessage}>{log.message}</td>
-      </tr>
+      <div key={index} className={styles.logEntry}>
+        <span className={styles.logTimestamp}>{log.timestamp}</span>
+        <span className={levelClass}>[{log.level}]</span> {log.message}
+      </div>
     );
   };
 
@@ -353,42 +314,10 @@ export default function Home() {
 
         {/* Log Panel */}
         <div className={styles.logPanel}>
-          <div className={styles.logHeader}>
-            <h2 className={styles.logTitle}>Activity Log</h2>
-            <div className={styles.logActions}>
-              <button 
-                className={styles.iconButton} 
-                onClick={copyLogs} 
-                title="Copy logs to clipboard"
-                disabled={logs.length === 0}
-              >
-                <FaCopy />
-              </button>
-              <button 
-                className={styles.iconButton} 
-                onClick={clearLogs} 
-                title="Clear logs"
-                disabled={logs.length === 0}
-              >
-                <FaTrash />
-              </button>
-            </div>
-          </div>
+          <h2 className={styles.logTitle}>Activity Log</h2>
           <div className={styles.logsContainer} ref={logsContainerRef}>
             {logs.length > 0 ? (
-              <table className={styles.logTable}>
-                <thead>
-                  <tr>
-                    <th>Timestamp</th>
-                    <th>Level</th>
-                    <th>Module</th>
-                    <th>Message</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {logs.map((log, index) => renderLogEntry(log, index))}
-                </tbody>
-              </table>
+              logs.map((log, index) => renderLogEntry(log, index))
             ) : (
               <div>No logs available</div>
             )}
