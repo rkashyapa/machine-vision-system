@@ -203,14 +203,63 @@
   font-size: 0.9rem;
 }
 
+.logTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.logTable th {
+  text-align: left;
+  padding: 0.5rem;
+  border-bottom: 1px solid #636e72;
+  color: #74b9ff;
+  font-weight: bold;
+}
+
+.logTable th:nth-child(1) {
+  width: 20%;
+}
+
+.logTable th:nth-child(2) {
+  width: 10%;
+}
+
+.logTable th:nth-child(3) {
+  width: 15%;
+}
+
+.logTable th:nth-child(4) {
+  width: 55%;
+}
+
 .logEntry {
-  margin-bottom: 0.5rem;
+  margin-bottom: 0;
   line-height: 1.4;
+}
+
+.logEntry td {
+  padding: 0.3rem 0.5rem;
+  border-bottom: 1px solid #444;
+  vertical-align: top;
 }
 
 .logTimestamp {
   color: #74b9ff;
-  margin-right: 0.5rem;
+  white-space: nowrap;
+}
+
+.logLevel {
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.logModule {
+  color: #81ecec;
+  white-space: nowrap;
+}
+
+.logMessage {
+  word-break: break-word;
 }
 
 .logInfo {
@@ -227,6 +276,10 @@
 
 .logError {
   color: #ff7675;
+}
+
+.logDebug {
+  color: #a29bfe;
 }
 
 .resultPass {
