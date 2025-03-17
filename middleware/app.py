@@ -82,26 +82,52 @@ def health_check():
 @app.route('/api/capture', methods=['POST'])
 def capture():
     try:
-        logger.info("Capture endpoint called")
+        emit_log("INFO", "Middleware: Capture endpoint called")
         
         # Make request to backend service
+        emit_log("INFO", "Middleware: Forwarding capture request to backend")
         response = requests.post(f"{BACKEND_URL}/capture")
         
         if response.status_code == 200:
             result = response.json()
+            
+            # Add the processed image URL for the frontend
+            if result.get('success'):
+                # Add the processed image URL
+                if result.get('filename'):
+                    result['processed_image_url'] = f"/api/images/processed/{result['filename']}"
+                
+                # Add original_image field if not present
+                if not result.get('original_image') and result.get('original_image_path'):
+                    result['original_image'] = os.path.basename(result['original_image_path'])
+                
+                # Add processed_image field if not present
+                if not result.get('processed_image') and result.get('filename'):
+                    result['processed_image'] = result['filename']
+                
+                # Emit the capture result via WebSocket
+                socketio.emit('capture_result', result)
+                
+                # Log detailed information about the capture
+                if result.get('result'):
+                    emit_log("INFO", f"Backend: Capture completed with result: {result.get('result')} (confidence: {result.get('confidence', 0):.2f})")
+                
             logger.info(f"Capture successful: {result}")
             return jsonify(result), 200
         else:
             error_msg = f"Backend service returned error: {response.status_code}"
+            emit_log("ERROR", f"Backend: {error_msg}")
             logger.error(error_msg)
             return jsonify({"error": error_msg}), 500
             
     except requests.exceptions.RequestException as e:
         error_msg = f"Error during capture process: {str(e)}"
+        emit_log("ERROR", f"Middleware: {error_msg}")
         logger.error(error_msg)
         return jsonify({"error": error_msg}), 500
     except Exception as e:
         error_msg = f"Unexpected error: {str(e)}"
+        emit_log("ERROR", f"Middleware: {error_msg}")
         logger.error(error_msg)
         return jsonify({"error": error_msg}), 500
 
